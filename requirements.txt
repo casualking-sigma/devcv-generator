@@ -2,3 +2,4 @@ streamlit
 openai
 reportlab
 stripe
+jsonschema
