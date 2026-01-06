@@ -13,9 +13,8 @@ import io
 import stripe
 
 # === KLUCZE – przeniesione do st.secrets (dodaj do .streamlit/secrets.toml) ===
-client = OpenAI(api_key=st.secrets["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"])
-stripe.api_key = st.secrets["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"]
-
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+stripe.api_key = st.secrets["STRIPE_SECRET_KEY"]
 # Font
 pdfmetrics.registerFont(TTFont('DejaVuSans', 'DejaVuSans.ttf'))
 
@@ -250,4 +249,5 @@ else:
             )
 
             st.success("CV gotowe!")
+
 
