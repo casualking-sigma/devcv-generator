@@ -527,17 +527,20 @@ if not st.session_state.paid and session_id:
 # ----------------------------
 st.title("Generator CV Dla developerów")
 
-if not st.session_state.paid:
-    st.write("Profesjonalne CV po polsku, ATS-friendly, wygenerowane przez AI.")
-    st.write("**Cena: 20 zł** – jednorazowa płatność")
 
-    if st.secrets.get("ALLOW_TEST_BYPASS", False):
-        if st.button("TESTUJ BEZ PŁATNOŚCI (tylko lokalnie)"):
-            st.session_state.paid = True
+    # Jeśli link do płatności został już wygenerowany, pokaż go i nie twórz nowych sesji przy rerunach.
+if st.session_state.checkout_url:
+        st.info("Kliknij przycisk poniżej, aby przejść do płatności w Stripe. Jeśli otworzy się nowa karta — po płatności wrócisz do aplikacji w tej karcie.")
+        st.link_button("Przejdź do płatności w Stripe", st.session_state.checkout_url)
+
+        if st.button("Wygeneruj nowy link płatności"):
+            st.session_state.checkout_url = None
             st.rerun()
 
-    if st.button("Kup teraz i wygeneruj CV"):
-        with st.spinner("Przekierowanie do Stripe..."):
+        st.stop()
+
+if st.button("Kup teraz i wygeneruj CV"):
+        with st.spinner("Tworzenie linku płatności w Stripe..."):
             session = stripe.checkout.Session.create(
                 payment_method_types=["card"],
                 line_items=[
@@ -554,18 +557,8 @@ if not st.session_state.paid:
                 success_url=f"{APP_URL}/?session_id={{CHECKOUT_SESSION_ID}}",
                 cancel_url=f"{APP_URL}/",
             )
-
-            st.write("Przekierowanie do Stripe...")
-            st.markdown(
-                f"""
-                <script>
-                  window.location.href = "{session.url}";
-                </script>
-                """,
-                unsafe_allow_html=True,
-            )
-            st.link_button("Kliknij, jeśli nie nastąpiło automatyczne przekierowanie", session.url)
-            st.stop()
+        st.session_state.checkout_url = session.url
+        st.rerun()
 
 else:
     st.success("✅ Płatność zaakceptowana! Wypełnij dane poniżej")
