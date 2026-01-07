@@ -519,7 +519,7 @@ st.title("Generator CV Dla developerów")
 
 
     # Jeśli link do płatności został już wygenerowany, pokaż go i nie twórz nowych sesji przy rerunach.
-if st.session_state.checkout_url:
+if st.session_state.get("checkout_url"):
         st.info("Kliknij przycisk poniżej, aby przejść do płatności w Stripe. Jeśli otworzy się nowa karta — po płatności wrócisz do aplikacji w tej karcie.")
         st.link_button("Przejdź do płatności w Stripe", st.session_state.checkout_url)
 
