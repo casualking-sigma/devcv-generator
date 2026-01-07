@@ -1,3 +1,4 @@
+
 import io
 import json
 import logging
@@ -524,7 +525,7 @@ if not st.session_state.paid and session_id:
 # ----------------------------
 # UI
 # ----------------------------
-st.title("Generator CV – 20 zł")
+st.title("Generator CV Dla developerów")
 
 if not st.session_state.paid:
     st.write("Profesjonalne CV po polsku, ATS-friendly, wygenerowane przez AI.")
@@ -553,10 +554,19 @@ if not st.session_state.paid:
                 success_url=f"{APP_URL}/?session_id={{CHECKOUT_SESSION_ID}}",
                 cancel_url=f"{APP_URL}/",
             )
+
+            st.write("Przekierowanie do Stripe...")
             st.markdown(
-                f'<meta http-equiv="refresh" content="0;url={session.url}">',
+                f"""
+                <script>
+                  window.location.href = "{session.url}";
+                </script>
+                """,
                 unsafe_allow_html=True,
             )
+            st.link_button("Kliknij, jeśli nie nastąpiło automatyczne przekierowanie", session.url)
+            st.stop()
+
 else:
     st.success("✅ Płatność zaakceptowana! Wypełnij dane poniżej")
 
@@ -610,6 +620,4 @@ else:
         )
         st.success("CV gotowe!")
 
-# Notes:
-# - Ten PDF jest ATS-safe: 1 kolumna, brak tabel/ikon/kolorowych bloków.
-# - Jeśli potrzebujesz twardego “zapisu płatności” bez DB, kolejnym krokiem jest receipt_code (HMAC).
+
