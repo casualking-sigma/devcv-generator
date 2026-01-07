@@ -503,24 +503,14 @@ def render_pdf_from_cv(cv: dict, style: str, photo_file) -> io.BytesIO:
     buffer.seek(0)
     return buffer
 
-
 # ----------------------------
 # Stripe gate (secure unlock)
 # ----------------------------
 if "paid" not in st.session_state:
     st.session_state.paid = False
 
-session_id = get_qparam("session_id")
-if not st.session_state.paid and session_id:
-    if verify_stripe_session(session_id):
-        st.session_state.paid = True
-        st.session_state.paid_session_id = session_id
-        try:
-            del st.query_params["session_id"]
-        except Exception:
-            pass
-        st.rerun()
-
+if "checkout_url" not in st.session_state:
+    st.session_state.checkout_url = None
 
 # ----------------------------
 # UI
